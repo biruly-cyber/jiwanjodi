@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 
 const Navbar = () => {
   return (
-    <div className="px-6 md:px-8 py-1 border-b border-slate-600 ">
+    <div className="px-6 md:px-8 py-1  sticky top-0 z-50 text-white">
       {/* top nav help section  */}
       <div className="flex justify-end gap-2">
         <BiSupport className="text-xl " />
@@ -36,12 +36,12 @@ const Navbar = () => {
             <li>Grooms</li>
             <li>Blog</li>
             <li>
-              <Button className="border border-gray-600 px-4 rounded-full bg-transparent text-slate-900 hover:text-white">
+              <Button className="border border-gray-600 px-4 rounded-full bg-transparent text-slate-900 hover:text-white hover:bg-blue-700 hover:border-none">
                 Are you a vendor?
               </Button>
             </li>
             <li>
-              <Button className="px-4  rounded-full">Sign in</Button>
+              <Button className="px-4  rounded-full bg-blue-600 hover:bg-blue-700">Sign in</Button>
             </li>
           </ul>
         </div>
