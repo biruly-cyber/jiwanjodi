@@ -1,6 +1,6 @@
+"use client"
 import HeroSection from "@/components/util-component/HeroSection";
 import Navbar from "@/components/util-component/Navbar";
-
 
 export default function Home() {
   return (
