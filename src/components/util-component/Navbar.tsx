@@ -9,7 +9,7 @@ const Navbar = () => {
 
   // handle on sign in 
   const handleOnSignIn = () =>{
-    router.replace('./sign-up')
+    router.replace('./auth')
   }
   return (
     <div className="px-6 md:px-8 py-1  sticky top-0 z-50 text-white">

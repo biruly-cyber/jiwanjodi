@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,23 +11,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Country, State, City, IState, ICity } from "country-state-city";
-import { stat } from "fs";
 
-const SignUpPage = () => {
+const SignUpPage: React.FC = () => {
   const [states, setStates] = useState<IState[]>([]);
   const [cities, setCities] = useState<ICity[]>([]);
-  const [selectedState, setSelectedState] = useState<string>();
   const [selectedStateCode, setSelectedStateCode] = useState<string>();
-  const [selectedCity, setSelectedCity] = useState<string>();
   const [isStateSelected, setIsStateSelected] = useState<boolean>(false);
+  const [sectorCategory, setSectorCategory] = useState<string[]>([]);
 
-  // Fetch states only once when the component mounts
+  const [nameOfBusiness, setNameOfBusiness] = useState<string>("");
+  const [sectorType, setSectorType] = useState<string>("");
+  const [selectCategory, setSelectCategory] = useState<string>("");
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [minCost, setMinCost] = useState<number>(5000);
+  const [pinCode, setPinCode] = useState<string>("");
+
+  const sectorTypes = ["Wedding Venue", "Wedding Vendor", "Bride", "Groom"];
+
+  const weddingVenues = [
+    "Wedding Lawns Farmhouse",
+    "Hotel",
+    "Banquet Halls",
+    "Marriage Garden",
+    "Wedding Halls",
+    "Wedding Resorts",
+  ];
+  const weddingVendors = [
+    "Caterers",
+    "Wedding Invitation",
+    "Wedding Decor",
+    "Wedding Gift",
+    "Wedding Photographers",
+    "Wedding Coordinators",
+    "Wedding Music",
+    "Wedding Videographers",
+    "Wedding Transportation",
+    "Wedding House",
+    "Tent House",
+    "Wedding Entertainment",
+    "Florists",
+    "Wedding Planner",
+    "Wedding Decoration",
+    "Wedding Cakes",
+    "Wedding Agencies",
+    "Wedding DJ",
+    "Pandit",
+    "Photobooth",
+    "Astrologers",
+  ];
+  const brides = [
+    "Bridal Lahenga",
+    "Bridal Jewellery",
+    "Bridal Makeup Artist",
+    "Mehndi Artist",
+    "Makeup Salon",
+  ];
+  const grooms = ["Sherwani", "Men's Grooming", "Men's Accessories"];
+
   useEffect(() => {
-    // Fetch states only once when the component mounts
     const india = Country.getCountryByCode("IN");
     if (india) {
       const statesInIndia = State.getStatesOfCountry(india.isoCode);
@@ -36,17 +80,15 @@ const SignUpPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedState);
-
-    if (selectedState) {
-      const allCities = City.getCitiesOfState("IN", selectedState);
+    if (selectedStateCode) {
+      const allCities = City.getCitiesOfState("IN", selectedStateCode);
       setCities(allCities);
     }
-  }, [selectedState, selectedStateCode]);
+  }, [selectedStateCode]);
 
-  const handleChangestate = (state: string, stateCode: string) => {
-    console.log(state);
+  const handleStateChange = (state: string, stateCode: string) => {
     setSelectedState(state);
+    setIsStateSelected(true);
     setSelectedStateCode(stateCode);
   };
 
@@ -54,39 +96,60 @@ const SignUpPage = () => {
     setSelectedCity(city);
   };
 
+  const handleSectorTypeChange = (sector: string) => {
+    setSectorType(sector);
+    if (sector === "Wedding Venue") {
+      setSectorCategory(weddingVenues);
+    } else if (sector === "Wedding Vendor") {
+      setSectorCategory(weddingVendors);
+    } else if (sector === "Bride") {
+      setSectorCategory(brides);
+    } else if (sector === "Groom") {
+      setSectorCategory(grooms);
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("Form submitted", {
+      nameOfBusiness,
+      sectorType,
+      selectCategory,
+      selectedState,
+      selectedCity,
+      minCost,
+      pinCode,
+    });
+  };
+
   return (
     <>
       <section className="flex justify-between items-center">
         <div
-          className={`h-screen w-[40%] bg-black`}
+          className="h-screen w-[40%] bg-black"
           style={{
-            backgroundImage: `url('../../../assets/sign-up-img.jpg')`,
+            background: `url('../../../assets/sign-up-img.jpg')`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
           }}
-        >
-          {/* Content for the first div */}
-        </div>
-        <div className="w-[60%]  h-screen overflow-y-scroll bg-[#fdfdfd]">
+        ></div>
+        <div className="w-[60%] h-screen overflow-y-scroll bg-[#fdfdfd]">
           <div className="px-6 md:px-8 py-10 bg-white text-black shadow-sm">
-            {/* main navbar  */}
             <nav className="flex justify-between">
               <div className="cursor-pointer">
                 <span className="text-xl">EVENTKAREN</span>
               </div>
-              <span className="text-sm">Need Help:- +91-6200932331</span>
+              <span className="text-sm">Need Help: +91-6200932331</span>
             </nav>
-            {/* bottom navbar  */}
           </div>
 
-          {/* QUATE FOR THE BUSINESS  */}
           <div className="p-8 flex justify-start items-start mx-auto flex-col w-full">
-            <p className="font-seminbold text-xl text-center">
+            <p className="font-semibold text-xl text-center">
               Try EventKaren.com for free and grow your business.
             </p>
             <div className="px-4 py-4 flex flex-col">
               <span className="font-semibold text-lg">Business Details</span>
-              <span className=" text-xs">
+              <span className="text-xs">
                 Create your own storefront and be visible to thousands of
                 couples.
               </span>
@@ -97,69 +160,75 @@ const SignUpPage = () => {
                     type="text"
                     id="name_of_business"
                     placeholder="Name of Business"
-                    className="w-full"
+                    className="w-full p-4 h-12"
+                    value={nameOfBusiness}
+                    onChange={(e) => setNameOfBusiness(e.target.value)}
                   />
                 </div>
-                {/* sector type and category */}
                 <div className="flex justify-start gap-5">
                   <div className="gap-1.5">
                     <Label htmlFor="select_sector">Sector Type</Label>
-                    <Select>
-                      <SelectTrigger className="w-[180px]">
+                    <Select onValueChange={handleSectorTypeChange}>
+                      <SelectTrigger className="w-[180px] p-4 h-12">
                         <SelectValue placeholder="Sector Type" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Fruits</SelectLabel>
-                          <SelectItem value="apple">Apple</SelectItem>
-                          <SelectItem value="banana">Banana</SelectItem>
-                          <SelectItem value="blueberry">Blueberry</SelectItem>
-                          <SelectItem value="grapes">Grapes</SelectItem>
-                          <SelectItem value="pineapple">Pineapple</SelectItem>
+                          <SelectLabel>Select Sector</SelectLabel>
+                          {sectorTypes.map((sector, index) => (
+                            <SelectItem value={sector} key={index}>
+                              {sector}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="gap-1.5">
-                    <Label htmlFor="select_sector">Select Category</Label>
-                    <Select>
-                      <SelectTrigger className="w-[180px]">
+                    <Label htmlFor="select_category">Select Category</Label>
+                    <Select onValueChange={setSelectCategory}>
+                      <SelectTrigger className="w-[180px] p-4 h-12">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Fruits</SelectLabel>
-                          <SelectItem value="apple">Apple</SelectItem>
-                          <SelectItem value="banana">Banana</SelectItem>
-                          <SelectItem value="blueberry">Blueberry</SelectItem>
-                          <SelectItem value="grapes">Grapes</SelectItem>
-                          <SelectItem value="pineapple">Pineapple</SelectItem>
+                          <SelectLabel>Category</SelectLabel>
+                          {sectorCategory.map((category, index) => (
+                            <SelectItem value={category} key={index}>
+                              {category}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-                {/* state and city  */}
                 <div className="flex justify-start gap-5">
                   <div className="gap-1.5">
-                    <Label htmlFor="select_sector">State</Label>
+                    <Label htmlFor="select_state">State</Label>
                     <Select
                       onValueChange={(value) => {
                         const selectedState = JSON.parse(value);
-                        handleChangestate(
+                        handleStateChange(
                           selectedState.name,
                           selectedState.stateCode
                         );
                       }}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-[180px] p-4 h-12">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>State</SelectLabel>
-                          {states.map((state, index) => (
-                            <SelectItem value={state.name} key={index}>
+                          {states.map((state) => (
+                            <SelectItem
+                              value={JSON.stringify({
+                                name: state.name,
+                                stateCode: state.isoCode,
+                              })}
+                              key={state.isoCode}
+                            >
                               {state.name}
                             </SelectItem>
                           ))}
@@ -168,9 +237,12 @@ const SignUpPage = () => {
                     </Select>
                   </div>
                   <div className="gap-1.5">
-                    <Label htmlFor="select_sector">City</Label>
-                    <Select>
-                      <SelectTrigger className="w-[180px]">
+                    <Label htmlFor="select_city">City</Label>
+                    <Select
+                      disabled={!isStateSelected}
+                      onValueChange={handleCityChange}
+                    >
+                      <SelectTrigger className="w-[180px] p-4 h-12">
                         <SelectValue placeholder="City" />
                       </SelectTrigger>
                       <SelectContent>
@@ -186,60 +258,23 @@ const SignUpPage = () => {
                     </Select>
                   </div>
                 </div>
-                {/* cost and other  */}
                 <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="name_of_business">Pin code</Label>
+                  <Label htmlFor="pin_code">Pin code</Label>
                   <Input
                     type="text"
                     id="pin_code"
                     placeholder="Enter Pin Code"
+                    className="w-full p-4 h-12"
+                    value={pinCode}
+                    onChange={(e) => setPinCode(e.target.value)}
                   />
                 </div>
+              </div>
 
-                <div className="flex justify-between ">
-                  <div className="flex flex-col">
-                    <Label htmlFor="airplane-mode">Negotiable</Label>
-                    <span className="text-xs">Price is negotiable?</span>
-                  </div>
-                  <Switch id="airplane-mode" />
-                </div>
-                <div className="flex justify-between gap-2">
-                  <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor="min_cost">Minimum Cost</Label>
-                    <Slider defaultValue={[20]} max={100} step={1} />
-                  </div>
-                  <Input
-                    type="number"
-                    id="min_cost"
-                    placeholder="Minimum Cost"
-                    className="w-32"
-                  />
-                </div>
-              </div>
-              <span className="font-semibold text-lg mt-9">
-                Login Information
-              </span>
-              <div className="flex flex-col gap-4 mt-4">
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input type="number" id="phone" placeholder="Phone Number" />
-                </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input type="email" id="email" placeholder="Email" />
-                </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                  <Label htmlFor="password">Password</Label>
-                  <Input type="password" id="password" placeholder="Password" />
-                  <span className="text-xs">
-                    Your password must be between 8 and 48 characters and
-                    include at least 1 lowercase letter, 1 capital letter, 1
-                    number, and no spaces.
-                  </span>
-                </div>
-              </div>
               <div>
-                <Button className="mt-10 w-auto">Create our Account</Button>
+                <Button className="mt-10 w-auto" onClick={handleSubmit}>
+                  Create your Account
+                </Button>
               </div>
             </div>
           </div>
