@@ -4,6 +4,9 @@ import { BiSupport } from "react-icons/bi";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
+import Link from "next/link"
+ 
+
 const Navbar = () => {
   const router =  useRouter()
 
@@ -40,7 +43,7 @@ const Navbar = () => {
             <li>Grooms</li>
             <li>Blog</li>
             <li>
-              <Button className="border border-white px-4 rounded-full bg-transparent text-white hover:text-white hover:bg-blue-700 hover:border-none">
+              <Button variant={"outline"} className=" px-4 rounded-full bg-transparent text-white hover:text-white hover:bg-blue-700 hover:border-none">
                 Are you a vendor?
               </Button>
             </li>

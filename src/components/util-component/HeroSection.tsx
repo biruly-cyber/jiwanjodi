@@ -28,10 +28,14 @@ const HeroSection = () => {
               placeholder="in Location"
               className="outline-none focus:border-white"
             />
-            <Button className="bg-blue-600 hover:bg-blue-700">Discover</Button>
+            <Button variant={"outline"} className="bg-blue-600 hover:bg-blue-700 text-white">Discover</Button>
           </div>
         </div>
         <span className="text-white text-xl">1000+ of vender and couple trust on us.</span>
+      </section>
+
+      <section className="h-14 w-14 bg-white fixed right-10 bottom-10 rounded-full border border-red-500">
+         chat bot
       </section>
     </>
   );

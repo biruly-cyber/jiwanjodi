@@ -4,7 +4,7 @@ import { BiSupport } from "react-icons/bi";
 
 const Navbar = () => {
   return (
-    <div className="px-6 md:px-8 py-2.5  sticky top-0 z-50 text-black shadow-sm">
+    <div className="px-6 md:px-8 py-2.5  sticky top-0 z-50 text-white    bg-transparent">
       {/* top nav help section  */}
       <div className="flex justify-end gap-2">
         <BiSupport className="text-xl " />
@@ -13,7 +13,7 @@ const Navbar = () => {
       {/* main navbar  */}
       <nav className="flex justify-between">
         <div className="cursor-pointer">
-          <span className="text-xl">LOGO</span>
+          <span className="text-xl">Shadikaren</span>
         </div>
         <div className="py-3">
           <ul className="flex gap-12 cursor-pointer relative">
