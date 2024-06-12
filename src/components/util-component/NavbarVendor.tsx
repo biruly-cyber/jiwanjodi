@@ -4,7 +4,7 @@ import { BiSupport } from "react-icons/bi";
 
 const Navbar = () => {
   return (
-    <div className="px-6 md:px-8 py-2.5  sticky top-0 z-50 text-white    bg-transparent">
+    <div className="px-6 md:px-8 py-2.5 text-black border-b">
       {/* top nav help section  */}
       <div className="flex justify-end gap-2">
         <BiSupport className="text-xl " />
@@ -17,8 +17,6 @@ const Navbar = () => {
         </div>
         <div className="py-3">
           <ul className="flex gap-12 cursor-pointer relative">
-            <li>Business Login</li>
-
             <li>Features</li>
             <li>Premium Services</li>
           </ul>
