@@ -28,10 +28,11 @@ const AuthNumber: React.FC<Props> = ({ onPhoneNumberSubmit }) => {
   };
 
   return (
+    // className="bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl p-[2px]
     <div>
-      <Card className="w-[350px]">
+      <Card className="w-[350px] shadow-md">
         <CardHeader>
-          <CardTitle className="text-center">Sign Up</CardTitle>
+          <CardTitle className="text-center uppercase">Login</CardTitle>
           {/* <CardDescription>
             Try EventKaren.com for free and grow your business.
           </CardDescription> */}
@@ -61,7 +62,14 @@ const AuthNumber: React.FC<Props> = ({ onPhoneNumberSubmit }) => {
               isSubmitted ? "cursor-not-allowed" : "cusror-pointer"
             } `}
           >
-            {isSubmitted ? (<span><BiLoaderCircle className="animate-spin inline-block mr-2" />  OTP Sent</span>) : "Send OTP"}
+            {isSubmitted ? (
+              <span>
+                <BiLoaderCircle className="animate-spin inline-block mr-2" />{" "}
+                OTP Sent
+              </span>
+            ) : (
+              "Send OTP"
+            )}
           </Button>
         </CardFooter>
       </Card>
