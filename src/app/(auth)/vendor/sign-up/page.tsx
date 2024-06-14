@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Country, State, City, IState, ICity } from "country-state-city";
+import Image from "next/image";
+import img from "../../../../assets/sign-up-img.jpg";
 
 const SignUpPage: React.FC = () => {
   const [states, setStates] = useState<IState[]>([]);
@@ -125,51 +127,56 @@ const SignUpPage: React.FC = () => {
   return (
     <>
       <section className="flex justify-between items-center">
-        <div
-          className="h-screen w-[40%] bg-black"
-          style={{
-            background: `url('../../../assets/sign-up-img.jpg')`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-          }}
-        ></div>
-        <div className="w-[60%] h-screen overflow-y-scroll bg-[#fdfdfd]">
-          <div className="px-6 md:px-8 py-10 bg-white text-black shadow-sm">
-            <nav className="flex justify-between">
+        <div className="h-screen w-0 md:w-[40%] -z-20">
+          <Image
+            src={img}
+            alt="Photo by Drew Beamer"
+            content="Photo by Drew Beamer"
+            className="hidden md:block rounded-md object-cover h-screen blur-sm backdrop-blur-sm filter brightness-50"
+          />
+          <p className="hidden md:block font-semibold text-6xl text-center absolute top-96 left-10  bg-gradient-to-r from-white to-violet-600 text-transparent bg-clip-text">
+            Try EventKaren.com <br />
+            for Free and <br /> Grow your business.
+          </p>
+        </div>
+        <div className="w-full md:w-[60%] h-screen  bg-[#fdfdfd]">
+          <div className="w-full px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 bg-white text-black shadow-sm">
+            <nav className="flex justify-between items-center">
               <div className="cursor-pointer">
-                <span className="text-xl">EVENTKAREN</span>
+                <span className="text-lg sm:text-xl">EVENTKAREN</span>
               </div>
-              <span className="text-sm">Need Help: +91-6200932331</span>
+              <span className="text-xs sm:text-sm">
+                Need Help: +91-6200932331
+              </span>
             </nav>
           </div>
 
-          <div className="p-8 flex justify-start items-start mx-auto flex-col w-full">
-            <p className="font-semibold text-xl text-center">
-              Try EventKaren.com for free and grow your business.
-            </p>
-            <div className="px-4 py-4 flex flex-col">
-              <span className="font-semibold text-lg">Business Details</span>
-              <span className="text-xs">
+          <div className=" py-3 px-4 sm:p-6 md:p-8 flex justify-center items-center flex-col w-full">
+            <div className="w-full max-w-lg px-4 py-4 flex flex-col border rounded-md shadow-md bg-white">
+              <span className="font-semibold text-lg text-center uppercase">
+                Business Details
+              </span>
+              <span className="text-xs mt-3 text-center bg-gradient-to-r from-pink-800 to-violet-900 text-transparent bg-clip-text">
                 Create your own storefront and be visible to thousands of
                 couples.
               </span>
               <div className="mt-4 flex flex-col gap-4">
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full items-center gap-1.5">
                   <Label htmlFor="name_of_business">Name of Business</Label>
                   <Input
                     type="text"
                     id="name_of_business"
                     placeholder="Name of Business"
-                    className="w-full p-4 h-12"
+                    className="w-full p-2 sm:p-4 h-10 sm:h-12"
                     value={nameOfBusiness}
                     onChange={(e) => setNameOfBusiness(e.target.value)}
                   />
                 </div>
-                <div className="flex justify-start gap-5">
+                <div className="flex flex-col sm:flex-row justify-start gap-5">
                   <div className="gap-1.5">
                     <Label htmlFor="select_sector">Sector Type</Label>
                     <Select onValueChange={handleSectorTypeChange}>
-                      <SelectTrigger className="w-[180px] p-4 h-12">
+                      <SelectTrigger className="w-full sm:w-[227px] p-2 sm:p-4 h-10 sm:h-12">
                         <SelectValue placeholder="Sector Type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -187,7 +194,7 @@ const SignUpPage: React.FC = () => {
                   <div className="gap-1.5">
                     <Label htmlFor="select_category">Select Category</Label>
                     <Select onValueChange={setSelectCategory}>
-                      <SelectTrigger className="w-[180px] p-4 h-12">
+                      <SelectTrigger className="w-full sm:w-[227px] p-2 sm:p-4 h-10 sm:h-12">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -203,7 +210,7 @@ const SignUpPage: React.FC = () => {
                     </Select>
                   </div>
                 </div>
-                <div className="flex justify-start gap-5">
+                <div className="flex flex-col sm:flex-row justify-start gap-5">
                   <div className="gap-1.5">
                     <Label htmlFor="select_state">State</Label>
                     <Select
@@ -215,7 +222,7 @@ const SignUpPage: React.FC = () => {
                         );
                       }}
                     >
-                      <SelectTrigger className="w-[180px] p-4 h-12">
+                      <SelectTrigger className="w-full sm:w-[227px] p-2 sm:p-4 h-10 sm:h-12">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
                       <SelectContent>
@@ -242,7 +249,7 @@ const SignUpPage: React.FC = () => {
                       disabled={!isStateSelected}
                       onValueChange={handleCityChange}
                     >
-                      <SelectTrigger className="w-[180px] p-4 h-12">
+                      <SelectTrigger className="w-full sm:w-[227px] p-2 sm:p-4 h-10 sm:h-12">
                         <SelectValue placeholder="City" />
                       </SelectTrigger>
                       <SelectContent>
@@ -258,21 +265,24 @@ const SignUpPage: React.FC = () => {
                     </Select>
                   </div>
                 </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full items-center gap-1.5">
                   <Label htmlFor="pin_code">Pin code</Label>
                   <Input
                     type="text"
                     id="pin_code"
                     placeholder="Enter Pin Code"
-                    className="w-full p-4 h-12"
+                    className="w-full p-2 sm:p-4 h-10 sm:h-12"
                     value={pinCode}
                     onChange={(e) => setPinCode(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div>
-                <Button className="mt-10 w-auto" onClick={handleSubmit}>
+              <div className="flex justify-center">
+                <Button
+                  className="mt-6 sm:mt-10 w-full sm:w-auto"
+                  onClick={handleSubmit}
+                >
                   Create your Account
                 </Button>
               </div>
