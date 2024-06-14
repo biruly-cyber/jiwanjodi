@@ -6,7 +6,7 @@ import AuthNumber from "@/components/util-component/AuthNumber";
 import { toast, useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import style from "../../custom-css/hero-section.module.css";
+import style from "../../../custom-css/hero-section.module.css";
 import Feature from "@/components/util-component/feature/Feature";
 
 const Auth = () => {
@@ -69,7 +69,7 @@ const Auth = () => {
       const { success, message } = response.data;
       if (success) {
         toast({ title: "Success", description: message, variant: "default" });
-        router.replace("./sign-up");
+        router.replace("./vendor/sign-up");
       }
     } catch (error) {
       toast({
@@ -84,17 +84,16 @@ const Auth = () => {
     <>
       <NavbarVendor />
 
-      <div className={style.backgroundLogin}>
-        <span className=" text-4xl font-bold  uppercase bg-gradient-to-r from-pink-600 to-purple-400 bg-clip-text text-transparent">
+      <div className={`${style.backgroundLogin} p-1 sm:p-6 md:p-8 lg:p-10`}>
+        <span className="hidden md:block text-2xl sm:text-3xl md:text-4xl font-bold uppercase bg-gradient-to-r from-pink-600 to-purple-400 bg-clip-text text-transparent  text-center mb-6">
           Get start with free <br /> and brand Grow your business.
         </span>
-        <div className="">
-          {isSubmitted ? (
-            <VerifyOtp onVerify={handleOnVerifyOtp} />
-          ) : (
-            <AuthNumber onPhoneNumberSubmit={handleOnPhoneNumberSubmit} />
-          )}
-        </div>
+
+        {isSubmitted ? (
+          <VerifyOtp onVerify={handleOnVerifyOtp} />
+        ) : (
+          <AuthNumber onPhoneNumberSubmit={handleOnPhoneNumberSubmit} />
+        )}
       </div>
 
       {/* feature section */}

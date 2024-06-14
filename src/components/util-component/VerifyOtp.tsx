@@ -43,14 +43,14 @@ const VerifyOtp: React.FC<Props> = ({ onVerify }) => {
   };
 
   return (
-    <div>
-      <Card className="w-[350px]">
+    <div className="flex justify-center ">
+      <Card className="w-full sm:w-[350px]">
         <CardHeader>
           <CardTitle className="text-center">Verification Code</CardTitle>
         </CardHeader>
         <CardContent>
           <form>
-            <div className="grid w-full items-center gap-4">
+            <div className="flex md:grid w-full items-center gap-4">
               <div className="flex flex-col space-y-7 items-center">
                 <InputOTP maxLength={6} value={otp} onChange={handleChange}>
                   <InputOTPGroup>

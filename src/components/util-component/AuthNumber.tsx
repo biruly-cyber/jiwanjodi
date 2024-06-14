@@ -28,18 +28,14 @@ const AuthNumber: React.FC<Props> = ({ onPhoneNumberSubmit }) => {
   };
 
   return (
-    // className="bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl p-[2px]
-    <div>
-      <Card className="w-[350px] shadow-md">
+    <div className="flex justify-center">
+      <Card className="w-full sm:w-[350px] shadow-md">
         <CardHeader>
           <CardTitle className="text-center uppercase">Login</CardTitle>
-          {/* <CardDescription>
-            Try EventKaren.com for free and grow your business.
-          </CardDescription> */}
         </CardHeader>
         <CardContent>
           <form>
-            <div className="grid w-full items-center gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input
@@ -59,8 +55,8 @@ const AuthNumber: React.FC<Props> = ({ onPhoneNumberSubmit }) => {
             onClick={handleSendOtp}
             disabled={isSubmitted}
             className={`${
-              isSubmitted ? "cursor-not-allowed" : "cusror-pointer"
-            } `}
+              isSubmitted ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             {isSubmitted ? (
               <span>
