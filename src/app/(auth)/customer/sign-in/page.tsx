@@ -15,15 +15,21 @@ import { Label } from "@/components/ui/label";
 import { FaGoogle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
+  const router = useRouter();
+
+  const handleOnSignUpPageRediredct = () => {
+    router.replace("./sign-up");
+  };
   return (
     <>
       <div>
         <CustomerNabar />
       </div>
 
-      <div className="w-full  relative md:absolute flex flex-col md:flex-row items-center justify-around h-screen top-0 mx-auto bg-gray-50 -z-10 p-4">
+      <div className="w-full  relative md:absolute flex flex-col md:flex-row items-center justify-around h-screen top-0 mx-auto bg-gray-50 md:-z-10 p-4">
         <div className="text-center md:text-left mb-4 md:mb-0">
           <div className="flex justify-center md:justify-start">
             <span className="capitalize text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
@@ -46,18 +52,9 @@ const SignIn = () => {
             </svg>
           </div>
 
-          <motion.div
-            initial={{ backgroundPosition: "0% 50%" }}
-            animate={{ backgroundPosition: "100% 50%" }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-            className="capitalize text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-700 bg-200%"
-          >
+          <p className="capitalize text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-700 bg-200%">
             Celebrate with Love
-          </motion.div>
+          </p>
         </div>
         <div className="w-full max-w-xs">
           <Card className="w-full">
@@ -103,8 +100,17 @@ const SignIn = () => {
                 </div>
               </form>
             </CardContent>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="flex justify-center flex-col">
               <Button>Sign In</Button>
+              <span className="text-sm mt-2">
+                Create an account?{" "}
+                <span
+                  className="text-blue-600 cursor-pointer"
+                  onClick={handleOnSignUpPageRediredct}
+                >
+                  Sign up
+                </span>
+              </span>
             </CardFooter>
           </Card>
         </div>
