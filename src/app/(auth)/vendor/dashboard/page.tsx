@@ -3,6 +3,7 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Bar, BarChart, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -149,6 +150,48 @@ const Dahboard = () => {
       paymentStatus: "Unpaid",
       totalAmount: "$300.00",
       paymentMethod: "Credit Card",
+    },
+  ];
+
+  const data = [
+    {
+      goal: 400,
+    },
+    {
+      goal: 300,
+    },
+    {
+      goal: 200,
+    },
+    {
+      goal: 300,
+    },
+    {
+      goal: 200,
+    },
+    {
+      goal: 278,
+    },
+    {
+      goal: 189,
+    },
+    {
+      goal: 239,
+    },
+    {
+      goal: 300,
+    },
+    {
+      goal: 200,
+    },
+    {
+      goal: 278,
+    },
+    {
+      goal: 189,
+    },
+    {
+      goal: 349,
     },
   ];
   return (
@@ -398,7 +441,9 @@ const Dahboard = () => {
               </PopoverContent>
             </Popover>
           </div>
-          <Button variant="secondary" className="hidden md:block">Download</Button>
+          <Button variant="secondary" className="hidden md:block">
+            Download
+          </Button>
         </div>
       </div>
 
@@ -500,41 +545,58 @@ const Dahboard = () => {
 
       {/* analytics  */}
       <section className="flex md:flex-row flex-col justify-center md:justify-evenly p-8 gap-4">
-        <div className="w-full md:w-2/3 h-80 bg-gray-50 border rounded-lg mb-4 md:mb-0"></div>
+        <div className="w-full md:w-2/3 h-80 bg-gray-50 border rounded-lg mb-4 md:mb-0 p-2 overflow-hidden">
+          <p className="text-lg py-1 px-3">Overview</p>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <Bar
+                dataKey="goal"
+                style={
+                  {
+                    fill: "hsl(var(--foreground))",
+                    opacity: 0.7,
+                  } as React.CSSProperties
+                }
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
         <div className="w-full md:w-1/3 h-80 p-4 border rounded-lg overflow-y-scroll shadow-sm">
           <p className="text-lg">Recent Booking</p>
           <span className="text-sm">You made 265 sales this month.</span>
-          <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
-            <TableHeader className="sticky top-0 ">
-              <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.invoice}>
-                  <TableCell className="font-medium">
-                    {invoice.invoice}
-                  </TableCell>
-                  <TableCell>{invoice.paymentStatus}</TableCell>
-                  <TableCell>{invoice.paymentMethod}</TableCell>
-                  <TableCell className="text-right">
-                    {invoice.totalAmount}
-                  </TableCell>
+          <div className="overflow-y-scroll">
+            <Table>
+              <TableCaption>A list of your recent invoices.</TableCaption>
+              <TableHeader className="sticky top-0 ">
+                <TableRow>
+                  <TableHead className="w-[100px]">Invoice</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Method</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Total</TableCell>
-                <TableCell className="text-right">$2,500.00</TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => (
+                  <TableRow key={invoice.invoice}>
+                    <TableCell className="font-medium">
+                      {invoice.invoice}
+                    </TableCell>
+                    <TableCell>{invoice.paymentStatus}</TableCell>
+                    <TableCell>{invoice.paymentMethod}</TableCell>
+                    <TableCell className="text-right">
+                      {invoice.totalAmount}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={3}>Total</TableCell>
+                  <TableCell className="text-right">$2,500.00</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
         </div>
       </section>
     </>
