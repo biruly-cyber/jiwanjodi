@@ -31,7 +31,7 @@ const AuthNumber: React.FC<Props> = ({ onPhoneNumberSubmit }) => {
     <div className="flex justify-center">
       <Card className="w-full sm:w-[350px] shadow-md">
         <CardHeader>
-          <CardTitle className="text-center uppercase">Login</CardTitle>
+          <CardTitle className="text-center uppercase">Eventkaren.com</CardTitle>
         </CardHeader>
         <CardContent>
           <form>

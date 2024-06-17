@@ -13,7 +13,7 @@ const Navbar = () => {
       {/* main navbar  */}
       <nav className="flex justify-between">
         <div className="cursor-pointer">
-          <span className="text-xl">Shadikaren</span>
+          <span className="text-xl">Eventkaren.com</span>
         </div>
         <div className="py-3">
           <ul className="flex gap-12 cursor-pointer relative">
