@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 import style from "../../../custom-css/hero-section.module.css";
 import Feature from "@/components/util-component/feature/Feature";
 
+
 const Auth = () => {
+  const server_url= process.env.SERVER_URL
   const { toast } = useToast();
   const router = useRouter();
   const [otp, setOtp] = useState<number | undefined>(undefined);
@@ -21,17 +23,17 @@ const Auth = () => {
     phoneNumber: string,
     isSubmitted: boolean
   ) => {
-    console.log(phoneNumber);
     setPhoneNumber(phoneNumber);
     setIsSubmitted(isSubmitted);
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/send/otp",
+        `https://event-management-server-o19a.onrender.com/user/new`,
         {
-          phoneNumber,
+          mobile: phoneNumber,
         }
       );
+      console.log(response)
       const { success, message } = response.data;
       if (success) {
         toast({
