@@ -1,11 +1,9 @@
 "use client";
-import CustomerNabar from "@/components/util-component/customer-navbar/CustomerNabar";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -14,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaGoogle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
-import { motion } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -24,21 +21,103 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { addDays, format } from "date-fns";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRouter } from "next/navigation";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+const frameworks1 = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+
+type EventLocation = {
+  state: string;
+  city: string;
+};
+
+type NewUser = {
+  name: string;
+  email: string;
+  password: string;
+  mobile: string;
+  eventLocation: EventLocation;
+  eventDate: number;
+  eventFor: string;
+};
 
 const SignUp = () => {
   const router = useRouter();
+  const [date, setDate] = React.useState<Date>();
+  const [userState, setUserState] = useState<NewUser>();
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+  const [open1, setOpen1] = React.useState(false);
+  const [value1, setValue1] = React.useState("");
+
+  //handle for sign up
   const handleToRedirectSignIn = () => {
     router.replace("./sign-in");
   };
   return (
     <>
-      {/* <div>
-        <CustomerNabar />
-      </div> */}
-
       <div className="w-full  flex flex-col md:flex-row items-center justify-around h-screen md:top-0 mx-auto bg-gray-50 p-4">
         <div className="text-center md:text-left mb-4 md:mb-0">
           <p className="text-2xl font-bold"> Eventkaren.com</p>
@@ -120,217 +199,158 @@ const SignUp = () => {
                   <div className=" flex-col md:flex md:flex-row space-y-4 md:space-y-0 md:justify-between md:items-center">
                     <div className="flex flex-col space-y-1.5">
                       <Label htmlFor="password">Location</Label>
-                      <Select>
-                        <SelectTrigger className="w-auto md:w-[180px]">
-                          <SelectValue placeholder="Select a timezone" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>North America</SelectLabel>
-                            <SelectItem value="est">
-                              Eastern Standard Time (EST)
-                            </SelectItem>
-                            <SelectItem value="cst">
-                              Central Standard Time (CST)
-                            </SelectItem>
-                            <SelectItem value="mst">
-                              Mountain Standard Time (MST)
-                            </SelectItem>
-                            <SelectItem value="pst">
-                              Pacific Standard Time (PST)
-                            </SelectItem>
-                            <SelectItem value="akst">
-                              Alaska Standard Time (AKST)
-                            </SelectItem>
-                            <SelectItem value="hst">
-                              Hawaii Standard Time (HST)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Europe & Africa</SelectLabel>
-                            <SelectItem value="gmt">
-                              Greenwich Mean Time (GMT)
-                            </SelectItem>
-                            <SelectItem value="cet">
-                              Central European Time (CET)
-                            </SelectItem>
-                            <SelectItem value="eet">
-                              Eastern European Time (EET)
-                            </SelectItem>
-                            <SelectItem value="west">
-                              Western European Summer Time (WEST)
-                            </SelectItem>
-                            <SelectItem value="cat">
-                              Central Africa Time (CAT)
-                            </SelectItem>
-                            <SelectItem value="eat">
-                              East Africa Time (EAT)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Asia</SelectLabel>
-                            <SelectItem value="msk">
-                              Moscow Time (MSK)
-                            </SelectItem>
-                            <SelectItem value="ist">
-                              India Standard Time (IST)
-                            </SelectItem>
-                            <SelectItem value="cst_china">
-                              China Standard Time (CST)
-                            </SelectItem>
-                            <SelectItem value="jst">
-                              Japan Standard Time (JST)
-                            </SelectItem>
-                            <SelectItem value="kst">
-                              Korea Standard Time (KST)
-                            </SelectItem>
-                            <SelectItem value="ist_indonesia">
-                              Indonesia Central Standard Time (WITA)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Australia & Pacific</SelectLabel>
-                            <SelectItem value="awst">
-                              Australian Western Standard Time (AWST)
-                            </SelectItem>
-                            <SelectItem value="acst">
-                              Australian Central Standard Time (ACST)
-                            </SelectItem>
-                            <SelectItem value="aest">
-                              Australian Eastern Standard Time (AEST)
-                            </SelectItem>
-                            <SelectItem value="nzst">
-                              New Zealand Standard Time (NZST)
-                            </SelectItem>
-                            <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>South America</SelectLabel>
-                            <SelectItem value="art">
-                              Argentina Time (ART)
-                            </SelectItem>
-                            <SelectItem value="bot">
-                              Bolivia Time (BOT)
-                            </SelectItem>
-                            <SelectItem value="brt">
-                              Brasilia Time (BRT)
-                            </SelectItem>
-                            <SelectItem value="clt">
-                              Chile Standard Time (CLT)
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-[200px] justify-between"
+                          >
+                            {value
+                              ? frameworks.find(
+                                  (framework) => framework.value === value
+                                )?.label
+                              : "Select Location.."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search framework..." />
+                            <CommandList>
+                              <CommandEmpty>No framework found.</CommandEmpty>
+                              <CommandGroup>
+                                {frameworks.map((framework) => (
+                                  <CommandItem
+                                    key={framework.value}
+                                    value={framework.value}
+                                    onSelect={(currentValue) => {
+                                      setValue(
+                                        currentValue === value
+                                          ? ""
+                                          : currentValue
+                                      );
+                                      setOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        value === framework.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {framework.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className="flex flex-col space-y-1.5">
                       <Label htmlFor="password">Country</Label>
-                      <Select>
-                        <SelectTrigger className="w-auto md:w-[180px]">
-                          <SelectValue placeholder="Select a timezone" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>North America</SelectLabel>
-                            <SelectItem value="est">
-                              Eastern Standard Time (EST)
-                            </SelectItem>
-                            <SelectItem value="cst">
-                              Central Standard Time (CST)
-                            </SelectItem>
-                            <SelectItem value="mst">
-                              Mountain Standard Time (MST)
-                            </SelectItem>
-                            <SelectItem value="pst">
-                              Pacific Standard Time (PST)
-                            </SelectItem>
-                            <SelectItem value="akst">
-                              Alaska Standard Time (AKST)
-                            </SelectItem>
-                            <SelectItem value="hst">
-                              Hawaii Standard Time (HST)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Europe & Africa</SelectLabel>
-                            <SelectItem value="gmt">
-                              Greenwich Mean Time (GMT)
-                            </SelectItem>
-                            <SelectItem value="cet">
-                              Central European Time (CET)
-                            </SelectItem>
-                            <SelectItem value="eet">
-                              Eastern European Time (EET)
-                            </SelectItem>
-                            <SelectItem value="west">
-                              Western European Summer Time (WEST)
-                            </SelectItem>
-                            <SelectItem value="cat">
-                              Central Africa Time (CAT)
-                            </SelectItem>
-                            <SelectItem value="eat">
-                              East Africa Time (EAT)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Asia</SelectLabel>
-                            <SelectItem value="msk">
-                              Moscow Time (MSK)
-                            </SelectItem>
-                            <SelectItem value="ist">
-                              India Standard Time (IST)
-                            </SelectItem>
-                            <SelectItem value="cst_china">
-                              China Standard Time (CST)
-                            </SelectItem>
-                            <SelectItem value="jst">
-                              Japan Standard Time (JST)
-                            </SelectItem>
-                            <SelectItem value="kst">
-                              Korea Standard Time (KST)
-                            </SelectItem>
-                            <SelectItem value="ist_indonesia">
-                              Indonesia Central Standard Time (WITA)
-                            </SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>Australia & Pacific</SelectLabel>
-                            <SelectItem value="awst">
-                              Australian Western Standard Time (AWST)
-                            </SelectItem>
-                            <SelectItem value="acst">
-                              Australian Central Standard Time (ACST)
-                            </SelectItem>
-                            <SelectItem value="aest">
-                              Australian Eastern Standard Time (AEST)
-                            </SelectItem>
-                            <SelectItem value="nzst">
-                              New Zealand Standard Time (NZST)
-                            </SelectItem>
-                            <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-                          </SelectGroup>
-                          <SelectGroup>
-                            <SelectLabel>South America</SelectLabel>
-                            <SelectItem value="art">
-                              Argentina Time (ART)
-                            </SelectItem>
-                            <SelectItem value="bot">
-                              Bolivia Time (BOT)
-                            </SelectItem>
-                            <SelectItem value="brt">
-                              Brasilia Time (BRT)
-                            </SelectItem>
-                            <SelectItem value="clt">
-                              Chile Standard Time (CLT)
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                      <Popover open={open1} onOpenChange={setOpen1}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open1}
+                            className="w-[200px] justify-between"
+                          >
+                            {value
+                              ? frameworks1.find(
+                                  (framework) => framework.value === value
+                                )?.label
+                              : "Select Countary"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search framework..." />
+                            <CommandList>
+                              <CommandEmpty>No framework found.</CommandEmpty>
+                              <CommandGroup>
+                                {frameworks.map((framework) => (
+                                  <CommandItem
+                                    key={framework.value}
+                                    value={framework.value}
+                                    onSelect={(currentValue) => {
+                                      setValue(
+                                        currentValue === value
+                                          ? ""
+                                          : currentValue
+                                      );
+                                      setOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        value === framework.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {framework.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
 
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="password">Event Date</Label>
-                    <Input type="date" />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date ? (
+                            format(date, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                        <Select
+                          onValueChange={(value) =>
+                            setDate(addDays(new Date(), parseInt(value)))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent position="popper">
+                            <SelectItem value="0">Today</SelectItem>
+                            <SelectItem value="1">Tomorrow</SelectItem>
+                            <SelectItem value="3">In 3 days</SelectItem>
+                            <SelectItem value="7">In a week</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="rounded-md border">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="flex items-center space-x-4">
                     <Label htmlFor="i_m">I am</Label>
@@ -358,7 +378,7 @@ const SignUp = () => {
             <CardFooter className="flex flex-col justify-center">
               <Button>Sign Up</Button>
               <span className="text-center text-sm text-gray-500 mt-5">
-                Already have an account? 
+                Already have an account?
                 <span
                   className="text-blue-500 cursor-pointer"
                   onClick={handleToRedirectSignIn}
