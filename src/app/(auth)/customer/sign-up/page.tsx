@@ -106,16 +106,37 @@ type NewUser = {
 const SignUp = () => {
   const router = useRouter();
   const [date, setDate] = React.useState<Date>();
-  const [userState, setUserState] = useState<NewUser>();
+  const [userState, setUserState] = useState<NewUser>({
+    name: "",
+    email: "",
+    password: "",
+    mobile: "",
+    eventLocation: { state: "", city: "" },
+    eventDate: 0,
+    eventFor: "",
+  });
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [open1, setOpen1] = React.useState(false);
   const [value1, setValue1] = React.useState("");
+  const [isOtherOptionSelected, setIsOtherOptionSelected] = useState(false);
+  const [otherOtionSelected, setOtherOptionSelected] = useState("");
 
   //handle for sign up
   const handleToRedirectSignIn = () => {
     router.replace("./sign-in");
   };
+
+  //handle on other radio
+  const handleOnOther = () => {
+    setIsOtherOptionSelected((prev) => !prev);
+  };
+
+  //handle on sign up
+  const handleOnSignUp = () => {
+    console.log(userState);
+  };
+
   return (
     <>
       <div className="w-full  flex flex-col md:flex-row items-center justify-around h-screen md:top-0 mx-auto bg-gray-50 p-4">
@@ -154,9 +175,9 @@ const SignUp = () => {
         <div className="max-w-md ">
           <Card className="w-full">
             <CardHeader>
-              <CardTitle className="text-center text-xl bg-gradient-to-r from-pink-500 to-red-500 text-white p-1 rounded-sm">
+              {/* <CardTitle className="text-center text-xl bg-gradient-to-r from-pink-500 to-red-500 text-white p-1 rounded-sm">
                 SIGN IN
-              </CardTitle>
+              </CardTitle> */}
               {/* <CardDescription className="text-center">
                 Enter your details to create your account
               </CardDescription> */}
@@ -182,11 +203,31 @@ const SignUp = () => {
                 <div className="grid w-full items-center gap-4">
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Name" />
+                    <Input
+                      id="name"
+                      placeholder="Name"
+                      value={userState.name}
+                      onChange={(e) =>
+                        setUserState((prevState) => ({
+                          ...prevState,
+                          name: e.target.value,
+                        }))
+                      }
+                    />
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" placeholder="Email" />
+                    <Input
+                      id="email"
+                      placeholder="Email"
+                      value={userState.email}
+                      onChange={(e) =>
+                        setUserState((prevState) => ({
+                          ...prevState,
+                          email: e.target.value,
+                        }))
+                      }
+                    />
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="password">Password</Label>
@@ -194,6 +235,28 @@ const SignUp = () => {
                       type="password"
                       id="password"
                       placeholder="Password"
+                      value={userState.password}
+                      onChange={(e) =>
+                        setUserState((prevState) => ({
+                          ...prevState,
+                          password: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="mobile">Mobile Number</Label>
+                    <Input
+                      type="tel"
+                      id="mobile"
+                      placeholder="Mobile number"
+                      value={userState.mobile}
+                      onChange={(e) =>
+                        setUserState((prevState) => ({
+                          ...prevState,
+                          mobile: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div className=" flex-col md:flex md:flex-row space-y-4 md:space-y-0 md:justify-between md:items-center">
@@ -205,7 +268,7 @@ const SignUp = () => {
                             variant="outline"
                             role="combobox"
                             aria-expanded={open}
-                            className="w-[200px] justify-between"
+                            className="w-full md:w-[200px]  justify-between"
                           >
                             {value
                               ? frameworks.find(
@@ -259,7 +322,7 @@ const SignUp = () => {
                             variant="outline"
                             role="combobox"
                             aria-expanded={open1}
-                            className="w-[200px] justify-between"
+                            className="w-full md:w-[200px] justify-between"
                           >
                             {value
                               ? frameworks1.find(
@@ -366,17 +429,42 @@ const SignUp = () => {
                         <RadioGroupItem value="comfortable" id="r2" />
                         <Label htmlFor="r2">Groom</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="compact" id="r3" />
+                      <div
+                        className={`flex items-center space-x-2 ${
+                          isOtherOptionSelected ? "hidden" : "block"
+                        }`}
+                      >
+                        <RadioGroupItem
+                          value="compact"
+                          id="r3"
+                          onClick={handleOnOther}
+                        />
                         <Label htmlFor="r3">Other</Label>
                       </div>
                     </RadioGroup>
+                    {isOtherOptionSelected && (
+                      <Select
+                        onValueChange={(value) => setOtherOptionSelected(value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          <SelectItem value="guest">Guests</SelectItem>
+                          <SelectItem value="relative">Relative</SelectItem>
+                          <SelectItem value="professional">
+                            Professional
+                          </SelectItem>
+                          <SelectItem value="press">Press</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                 </div>
               </form>
             </CardContent>
             <CardFooter className="flex flex-col justify-center">
-              <Button>Sign Up</Button>
+              <Button onClick={handleOnSignUp}>Sign Up</Button>
               <span className="text-center text-sm text-gray-500 mt-5">
                 Already have an account?
                 <span
