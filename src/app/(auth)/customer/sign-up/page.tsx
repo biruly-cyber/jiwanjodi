@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,6 +42,9 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { City, Country, ICity, IState, State } from "country-state-city";
+import { toast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 const frameworks = [
   {
@@ -104,6 +107,7 @@ type NewUser = {
 };
 
 const SignUp = () => {
+  const apiUrl = process.env.API_URL;
   const router = useRouter();
   const [date, setDate] = React.useState<Date>();
   const [userState, setUserState] = useState<NewUser>({
@@ -115,12 +119,58 @@ const SignUp = () => {
     eventDate: 0,
     eventFor: "",
   });
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const [open1, setOpen1] = React.useState(false);
-  const [value1, setValue1] = React.useState("");
+  const [openLocation, setOpenLocation] = React.useState(false);
+  const [locationValue, setLocationValue] = React.useState("");
+  const [openCountary, setOpenCountary] = React.useState(false);
+  const [countaryValue, setCountaryValue] = React.useState("");
   const [isOtherOptionSelected, setIsOtherOptionSelected] = useState(false);
   const [otherOtionSelected, setOtherOptionSelected] = useState("");
+  const [states, setStates] = useState<IState[]>([]);
+  const [cities, setCities] = useState<ICity[]>([]);
+  const [selectedStateCode, setSelectedStateCode] = useState<string>();
+
+  useEffect(() => {
+    const india = Country.getCountryByCode("IN");
+    if (india) {
+      const statesInIndia = State.getStatesOfCountry(india.isoCode);
+      setStates(statesInIndia);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedStateCode) {
+      const allCities = City.getCitiesOfState("IN", selectedStateCode);
+      setCities(allCities);
+    }
+  }, [selectedStateCode]);
+
+  useEffect(() => {
+    setUserState((prevState) => ({
+      ...prevState,
+      eventLocation: {
+        ...prevState.eventLocation,
+        state: countaryValue,
+      },
+    }));
+
+    setUserState((prevState) => ({
+      ...prevState,
+      eventLocation: {
+        ...prevState.eventLocation,
+        city: locationValue,
+      },
+    }));
+
+    setUserState((prevState: NewUser) => ({
+      ...prevState,
+      eventDate: date?.getTime() || 0, // Fallback to 0 if date is undefined
+    }));
+
+    setUserState((prevState) => ({
+      ...prevState,
+      eventFor: otherOtionSelected,
+    }));
+  }, [locationValue, countaryValue, date, otherOtionSelected]);
 
   //handle for sign up
   const handleToRedirectSignIn = () => {
@@ -132,9 +182,54 @@ const SignUp = () => {
     setIsOtherOptionSelected((prev) => !prev);
   };
 
+  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value !== "other") {
+      setUserState((prevState) => ({
+        ...prevState,
+        eventFor: e.target.value,
+      }));
+    }
+  };
+
   //handle on sign up
-  const handleOnSignUp = () => {
-    console.log(userState);
+  const handleOnSignUp = async () => {
+    try {
+      console.log("working");
+      const response = await axios.post(
+        `https://event-management-server-o19a.onrender.com/api/event-karen/v1/user/new`,
+        {
+          name: userState.name,
+          email: userState.email,
+          password: userState.password,
+          mobile: userState.mobile,
+          eventLocation: userState.eventLocation,
+          eventDate: userState.eventDate,
+          eventFor: userState.eventFor,
+        }
+      );
+      const { success, message } = response.data;
+      if (success) {
+        toast({
+          title: "Success",
+          description: message,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -261,20 +356,23 @@ const SignUp = () => {
                   </div>
                   <div className=" flex-col md:flex md:flex-row space-y-4 md:space-y-0 md:justify-between md:items-center">
                     <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="password">Location</Label>
-                      <Popover open={open} onOpenChange={setOpen}>
+                      <Label htmlFor="password">State</Label>
+                      <Popover
+                        open={openCountary}
+                        onOpenChange={setOpenCountary}
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open}
-                            className="w-full md:w-[200px]  justify-between"
+                            aria-expanded={openCountary}
+                            className="w-full md:w-[200px] justify-between"
                           >
-                            {value
-                              ? frameworks.find(
-                                  (framework) => framework.value === value
-                                )?.label
-                              : "Select Location.."}
+                            {countaryValue
+                              ? states.find(
+                                  (state) => state.name === countaryValue
+                                )?.name
+                              : "Select State"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -284,28 +382,29 @@ const SignUp = () => {
                             <CommandList>
                               <CommandEmpty>No framework found.</CommandEmpty>
                               <CommandGroup>
-                                {frameworks.map((framework) => (
+                                {states.map((state, index) => (
                                   <CommandItem
-                                    key={framework.value}
-                                    value={framework.value}
+                                    key={index}
+                                    value={state.name}
                                     onSelect={(currentValue) => {
-                                      setValue(
-                                        currentValue === value
+                                      setCountaryValue(
+                                        currentValue === countaryValue
                                           ? ""
                                           : currentValue
                                       );
-                                      setOpen(false);
+                                      setSelectedStateCode(state?.isoCode);
+                                      setOpenCountary(false);
                                     }}
                                   >
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        value === framework.value
+                                        countaryValue === state.name
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
                                     />
-                                    {framework.label}
+                                    {state.name}
                                   </CommandItem>
                                 ))}
                               </CommandGroup>
@@ -315,20 +414,23 @@ const SignUp = () => {
                       </Popover>
                     </div>
                     <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="password">Country</Label>
-                      <Popover open={open1} onOpenChange={setOpen1}>
+                      <Label htmlFor="password">City</Label>
+                      <Popover
+                        open={openLocation}
+                        onOpenChange={setOpenLocation}
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open1}
-                            className="w-full md:w-[200px] justify-between"
+                            aria-expanded={openLocation}
+                            className="w-full md:w-[200px]  justify-between"
                           >
-                            {value
-                              ? frameworks1.find(
-                                  (framework) => framework.value === value
-                                )?.label
-                              : "Select Countary"}
+                            {locationValue
+                              ? cities.find(
+                                  (city) => city.name === locationValue
+                                )?.name
+                              : "Select City.."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -338,28 +440,28 @@ const SignUp = () => {
                             <CommandList>
                               <CommandEmpty>No framework found.</CommandEmpty>
                               <CommandGroup>
-                                {frameworks.map((framework) => (
+                                {cities.map((city) => (
                                   <CommandItem
-                                    key={framework.value}
-                                    value={framework.value}
+                                    key={city.name}
+                                    value={city.name}
                                     onSelect={(currentValue) => {
-                                      setValue(
-                                        currentValue === value
+                                      setLocationValue(
+                                        currentValue === locationValue
                                           ? ""
                                           : currentValue
                                       );
-                                      setOpen(false);
+                                      setOpenLocation(false);
                                     }}
                                   >
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        value === framework.value
+                                        locationValue === city.name
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
                                     />
-                                    {framework.label}
+                                    {city.name}
                                   </CommandItem>
                                 ))}
                               </CommandGroup>
@@ -391,9 +493,9 @@ const SignUp = () => {
                       </PopoverTrigger>
                       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
                         <Select
-                          onValueChange={(value) =>
-                            setDate(addDays(new Date(), parseInt(value)))
-                          }
+                          onValueChange={(value) => {
+                            setDate(addDays(new Date(), parseInt(value)));
+                          }}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select" />
@@ -418,15 +520,16 @@ const SignUp = () => {
                   <div className="flex items-center space-x-4">
                     <Label htmlFor="i_m">I am</Label>
                     <RadioGroup
-                      defaultValue="comfortable"
+                      defaultValue="bride"
                       className="flex space-x-4"
+                      onChange={handleUserChange}
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="default" id="r1" />
+                        <RadioGroupItem value="bride" id="r1" />
                         <Label htmlFor="r1">Bride</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="comfortable" id="r2" />
+                        <RadioGroupItem value="groom" id="r2" />
                         <Label htmlFor="r2">Groom</Label>
                       </div>
                       <div
@@ -435,7 +538,7 @@ const SignUp = () => {
                         }`}
                       >
                         <RadioGroupItem
-                          value="compact"
+                          value="other"
                           id="r3"
                           onClick={handleOnOther}
                         />
