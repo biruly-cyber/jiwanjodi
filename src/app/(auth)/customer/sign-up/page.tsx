@@ -22,7 +22,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  Check,
+  ChevronsUpDown,
+  Loader2,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -45,51 +50,7 @@ import {
 import { City, Country, ICity, IState, State } from "country-state-city";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
-const frameworks1 = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import * as z from "zod";
 
 type EventLocation = {
   state: string;
@@ -105,6 +66,20 @@ type NewUser = {
   eventDate: number;
   eventFor: string;
 };
+
+// Define Zod schema for validation
+const userSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
+  eventLocation: z.object({
+    state: z.string().min(1, "State is required"),
+    city: z.string().min(1, "City is required"),
+  }),
+  eventDate: z.number().min(1, "Event date is required"),
+  eventFor: z.string().min(1, "Event for is required"),
+});
 
 const SignUp = () => {
   const apiUrl = process.env.API_URL;
@@ -128,6 +103,10 @@ const SignUp = () => {
   const [states, setStates] = useState<IState[]>([]);
   const [cities, setCities] = useState<ICity[]>([]);
   const [selectedStateCode, setSelectedStateCode] = useState<string>();
+  const [isSignUpClicked, setIsSignUpClicked] = useState<Boolean>();
+  const [errors, setErrors] = useState<Partial<Record<keyof NewUser, string>>>(
+    {}
+  );
 
   useEffect(() => {
     const india = Country.getCountryByCode("IN");
@@ -195,7 +174,22 @@ const SignUp = () => {
   //handle on sign up
   const handleOnSignUp = async () => {
     try {
-      console.log("working");
+      setIsSignUpClicked(true);
+      // Validate form data
+      const validation = userSchema.safeParse(userState);
+      if (!validation.success) {
+        // Handle validation errors
+        validation.error.errors.forEach((error) => {
+          toast({
+            title: "Validation Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        });
+        setIsSignUpClicked(false);
+        return;
+      }
+
       const response = await axios.post(
         `https://event-management-server-o19a.onrender.com/api/event-karen/v1/user/new`,
         {
@@ -229,6 +223,8 @@ const SignUp = () => {
         description: "Something went wrong",
         variant: "destructive",
       });
+    } finally {
+      setIsSignUpClicked(false);
     }
   };
 
@@ -567,7 +563,13 @@ const SignUp = () => {
               </form>
             </CardContent>
             <CardFooter className="flex flex-col justify-center">
-              <Button onClick={handleOnSignUp}>Sign Up</Button>
+              <Button
+                onClick={handleOnSignUp}
+                disabled={isSignUpClicked ? true : false}
+              >
+                {isSignUpClicked && <Loader2 className="animate-spin mx-2" />}{" "}
+                Sign Up
+              </Button>
               <span className="text-center text-sm text-gray-500 mt-5">
                 Already have an account?
                 <span

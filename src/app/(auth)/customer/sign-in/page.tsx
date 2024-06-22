@@ -1,6 +1,6 @@
 "use client";
 import CustomerNabar from "@/components/util-component/customer-navbar/CustomerNabar";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,20 +16,77 @@ import { FaGoogle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+import { z } from "zod";
+
+// Define the schema
+const schema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+});
 
 const SignIn = () => {
   const router = useRouter();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isClickedSubmit, setIsClickedSubmit] = useState<boolean>(false);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      setIsClickedSubmit(true);
+
+      // Validate input
+      const result = schema.safeParse({ email, password });
+      if (!result.success) {
+        const errorMessages = result.error.errors.map((err) => err.message).join(", ");
+        toast({
+          title: "Validation Error",
+          description: errorMessages,
+          variant: "destructive",
+        });
+        setIsClickedSubmit(false);
+        return;
+      }
+
+      const response = await axios.post(
+        "https://event-management-server-o19a.onrender.com/api/event-karen/v1/user/login",
+        { email, password }
+      );
+
+      const { success, message } = response.data;
+      if (success) {
+        toast({
+          title: "Success",
+          description: message,
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      console.error("There was an error!", error);
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsClickedSubmit(false);
+    }
+  };
 
   const handleOnSignUpPageRediredct = () => {
     router.replace("./sign-up");
   };
+
   return (
     <>
       <div>
         <CustomerNabar />
       </div>
 
-      <div className="w-full  relative md:absolute flex flex-col md:flex-row items-center justify-around h-screen top-0 mx-auto bg-gray-50 md:-z-10 p-4">
+      <div className="w-full relative md:absolute flex flex-col md:flex-row items-center justify-around h-screen top-0 mx-auto bg-gray-50 md:-z-10 p-4">
         <div className="text-center md:text-left mb-4 md:mb-0">
           <div className="flex justify-center md:justify-start">
             <span className="capitalize text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">
@@ -83,11 +140,16 @@ const SignIn = () => {
                 <Separator className="w-[40%]" />
               </div>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="grid w-full items-center gap-4">
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" placeholder="email" />
+                    <Input
+                      id="email"
+                      placeholder="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="password">Password</Label>
@@ -95,23 +157,28 @@ const SignIn = () => {
                       type="password"
                       id="password"
                       placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                 </div>
+                <CardFooter className="flex justify-center flex-col">
+                  <Button type="submit" disabled={isClickedSubmit ? true : false}>
+                    {isClickedSubmit && <Loader2 className="animate-spin mx-2" />}{" "}
+                    Sign In
+                  </Button>
+                  <span className="text-sm mt-2">
+                    Create an account?{" "}
+                    <span
+                      className="text-blue-600 cursor-pointer"
+                      onClick={handleOnSignUpPageRediredct}
+                    >
+                      Sign up
+                    </span>
+                  </span>
+                </CardFooter>
               </form>
             </CardContent>
-            <CardFooter className="flex justify-center flex-col">
-              <Button>Sign In</Button>
-              <span className="text-sm mt-2">
-                Create an account?{" "}
-                <span
-                  className="text-blue-600 cursor-pointer"
-                  onClick={handleOnSignUpPageRediredct}
-                >
-                  Sign up
-                </span>
-              </span>
-            </CardFooter>
           </Card>
         </div>
       </div>
