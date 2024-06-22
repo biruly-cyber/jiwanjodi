@@ -1,4 +1,5 @@
-"use client";
+'use client';  // Ensure this directive is at the top
+
 import CustomerNabar from "@/components/util-component/customer-navbar/CustomerNabar";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,66 +15,54 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaGoogle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { registrationAction } from "@/redux/actions/userAction";
 
 // Define the schema
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
 });
 
 const SignIn = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isClickedSubmit, setIsClickedSubmit] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
+    'use server'
     event.preventDefault();
-    try {
-      setIsClickedSubmit(true);
+    
 
-      // Validate input
-      const result = schema.safeParse({ email, password });
-      if (!result.success) {
-        const errorMessages = result.error.errors.map((err) => err.message).join(", ");
-        toast({
-          title: "Validation Error",
-          description: errorMessages,
-          variant: "destructive",
-        });
-        setIsClickedSubmit(false);
-        return;
-      }
+    setIsClickedSubmit(true);
 
-      const response = await axios.post(
-        "https://event-management-server-o19a.onrender.com/api/event-karen/v1/user/login",
-        { email, password }
-      );
-
-      const { success, message } = response.data;
-      if (success) {
-        toast({
-          title: "Success",
-          description: message,
-          variant: "default",
-        });
-      }
-    } catch (error) {
-      console.error("There was an error!", error);
+    // Validate input
+    const result = schema.safeParse({ email, password });
+    if (!result.success) {
+      const errorMessages = result.error.errors
+        .map((err) => err.message)
+        .join(", ");
       toast({
-        title: "Error",
-        description: "Something went wrong",
+        title: "Validation Error",
+        description: errorMessages,
         variant: "destructive",
       });
-    } finally {
       setIsClickedSubmit(false);
+      return;
     }
+
+    dispatch(registrationAction(email, password));
+
+    setIsClickedSubmit(false);
   };
 
   const handleOnSignUpPageRediredct = () => {
@@ -163,8 +152,13 @@ const SignIn = () => {
                   </div>
                 </div>
                 <CardFooter className="flex justify-center flex-col">
-                  <Button type="submit" disabled={isClickedSubmit ? true : false}>
-                    {isClickedSubmit && <Loader2 className="animate-spin mx-2" />}{" "}
+                  <Button
+                    type="submit"
+                    disabled={isClickedSubmit ? true : false}
+                  >
+                    {isClickedSubmit && (
+                      <Loader2 className="animate-spin mx-2" />
+                    )}{" "}
                     Sign In
                   </Button>
                   <span className="text-sm mt-2">
