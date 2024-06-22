@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import "../app/custom-css/scrollbar.css"
-import { Toaster } from "@/components/ui/toaster"
+import "../app/custom-css/scrollbar.css";
+import { Toaster } from "@/components/ui/toaster";
+import { Provider } from 'react-redux'
+import { store } from "@/redux/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body>
-        <main>{children}</main>
+        <main>
+          <Provider store={store}>{children}</Provider>
+        </main>
         <Toaster />
       </body>
     </html>

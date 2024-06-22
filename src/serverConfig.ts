@@ -1,0 +1,1 @@
+export const SERVER_URL = "https://event-management-server-o19a.onrender.com/api/event-karen/v1"
