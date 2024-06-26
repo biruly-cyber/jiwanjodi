@@ -22,5 +22,4 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.message = null;
       state.error = action.payload.error;
     });
-
 });

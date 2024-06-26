@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "../app/custom-css/scrollbar.css";
 import { Toaster } from "@/components/ui/toaster";
-import { Provider } from 'react-redux'
-import { store } from "@/redux/store";
+import { Provider } from "react-redux";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body>
-        <main>
-          <Provider store={store}>{children}</Provider>
-        </main>
+        <main>{children}</main>
         <Toaster />
       </body>
     </html>
